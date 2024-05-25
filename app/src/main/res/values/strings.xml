@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SatSet</string>
+    <string name="login">Log In</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="message_login_page">Please enter your data first</string>
+    <string name="default_web_client_id">375275949090-a05c7v3f83uvpcj5lbeirvete2r883db.apps.googleusercontent.com</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_activity_add_address">AddAddressActivity</string>
+</resources>
