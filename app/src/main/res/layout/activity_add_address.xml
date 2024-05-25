@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout   xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.profile.address.AddAddressActivity" >
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/locationIcon"
+        android:src="@drawable/baseline_my_location_24"
+        android:layout_margin="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:shapeAppearanceOverlay="@style/CircularShapeAppearance"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <ImageView
+        android:id="@+id/centerMarker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-24dp"
+        android:src="@drawable/baseline_location_on_48"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="@+id/map"
+        app:layout_constraintStart_toStartOf="@+id/map"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:cardBackgroundColor="#F5F5F5"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineHorizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detected_address"
+                android:textStyle="bold"
+                tools:text="Detected Address"
+                android:drawableStart="@drawable/baseline_my_location_24"
+                android:drawablePadding="8dp"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ed_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/detected_address"
+                android:hint="Label As" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ed_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ed_label"
+                android:hint="Detail Address" />
+
+            <Button
+                android:id="@+id/buttonSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ed_address"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="Save Address" />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.75"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout  >
