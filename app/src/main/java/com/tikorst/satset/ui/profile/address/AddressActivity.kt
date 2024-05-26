@@ -3,21 +3,19 @@ package com.tikorst.satset.ui.profile.address
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-
 import com.tikorst.satset.R
 import com.tikorst.satset.data.Address
-
 import com.tikorst.satset.databinding.ActivityAddressBinding
 
 class AddressActivity : AppCompatActivity() {
@@ -26,9 +24,7 @@ class AddressActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-        supportActionBar?.title = "Addresses"
-
+        setup()
         binding = ActivityAddressBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -58,6 +54,15 @@ class AddressActivity : AppCompatActivity() {
         }
     }
 
+    private fun setup() {
+        enableEdgeToEdge()
+        supportActionBar?.apply{
+            title = "Addresses"
+            setDisplayHomeAsUpEnabled(true)
+            elevation = 0f
+        }
+    }
+
     private fun loadAddresses(userId: String) { // Replace with actual user ID
         viewModel.loadAddresses(userId)
     }
@@ -77,4 +82,12 @@ class AddressActivity : AppCompatActivity() {
             loadAddresses(currentUser.uid)
         }
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+        }
+        return true
+    }
+
 }

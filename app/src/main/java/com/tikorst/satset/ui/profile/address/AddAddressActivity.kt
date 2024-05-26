@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import android.Manifest
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.location.Geocoder
 import android.location.Location
 import android.os.Build
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.tikorst.satset.databinding.ActivityAddAddressBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -70,7 +72,12 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         binding.locationIcon.setOnClickListener{
-            getUserLocation()
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            requestLocationPermission()
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+                getUserLocation()
+            }
         }
     }
 
@@ -152,7 +159,7 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback {
     }
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
+        setMapStyle(isDarkTheme())
         // Add a marker in Sydney and move the camera
         val defaultLocation = LatLng(-7.790913040144507, 110.36846778178509)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10f))
@@ -190,6 +197,7 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback {
                 editAddress = intent.getParcelableExtra("EDIT_ADDRESS")
             }
             setData()
+            binding.locationIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.baseline_location_searching_24))
         }else{
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             requestLocationPermission()
@@ -236,6 +244,19 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback {
                     Toast.LENGTH_LONG).show()
             }
         finish()
+    }
+    private fun setMapStyle(darkTheme: Boolean) {
+        val styleResId = if (darkTheme) R.raw.map_style_dark else R.raw.map_style_light
+        mMap.setMapStyle(
+            MapStyleOptions.loadRawResourceStyle(
+                this, styleResId
+            )
+        )
+    }
+    private fun isDarkTheme(): Boolean {
+
+        return resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1

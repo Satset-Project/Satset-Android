@@ -47,9 +47,13 @@
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
         <item name="actionBarSize">@dimen/action_bar_size_small</item>
+        <item name="actionBarStyle">@style/MyActionBar</item>
     </style>
     <style name="CircularShapeAppearance" parent="">
         <item name="cornerSize">50%</item>
     </style>
-    <dimen name="action_bar_size_small">40dp</dimen>
+    <dimen name="action_bar_size_small">50dp</dimen>
+    <style name="MyActionBar" parent="Widget.AppCompat.ActionBar.Solid">
+        <item name="background">@color/md_theme_background</item>
+    </style>
 </resources>
