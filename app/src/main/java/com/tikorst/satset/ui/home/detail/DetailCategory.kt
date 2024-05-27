@@ -6,13 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridView
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.tikorst.satset.R
 import com.tikorst.satset.data.Category
+import com.tikorst.satset.data.CategoryData
+import com.tikorst.satset.data.Service
 import com.tikorst.satset.databinding.FragmentDetailCategoryBinding
 import com.tikorst.satset.databinding.FragmentHomeBinding
+import com.tikorst.satset.ui.home.CategoryAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,6 +32,9 @@ class DetailCategory : Fragment() {
     private var param1: Category? = null
     private var _binding: FragmentDetailCategoryBinding? = null
     private lateinit var navView: BottomNavigationView
+    private var servicesGridView: GridView? = null
+    private var categories: List<Service>? = null
+    private var categoryAdapter: ServicesAdapter? = null
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +59,17 @@ class DetailCategory : Fragment() {
         binding.description.text = param1!!.description
         navView = requireActivity().findViewById(R.id.nav_view)
         navView.visibility = View.GONE
+        servicesGridView = binding.servicesGridView
+        categories = param1!!.services
+
+        categoryAdapter = ServicesAdapter(requireContext(), categories as ArrayList<Service>)
+        servicesGridView!!.setAdapter(categoryAdapter)
+
+        servicesGridView!!.setOnItemClickListener { parent, view, position, id -> // Handle item click here
+            val selectedService: Service = (categories as ArrayList<Service>).get(position)
+            val fragment =  ServicesFragment.newInstance(selectedService)
+            fragment.show(childFragmentManager, "service")
+        }
         return root
     }
 
