@@ -42,9 +42,9 @@ object ServicesData{
     val plumbing: List<Service>
         get(){
             val services: MutableList<Service> = ArrayList()
-            services.add(Service("Plumbing Installation", "Professional installation of plumbing systems for residential and commercial properties. Includes pipe installations, fixture setup, water heater installation, and sewage system configuration.", R.drawable.electrical))
-            services.add(Service("Plumbing Repair", "Expert repair services for plumbing systems in residential and commercial properties. Includes fixing leaks, repairing pipes, unclogging drains, and addressing water pressure issues.", R.drawable.electrical))
-            services.add(Service("Plumbing Maintenance", "Comprehensive maintenance services for plumbing systems in residential and commercial properties. Includes regular inspections, cleaning, and upkeep to prevent issues and ensure proper functioning.", R.drawable.electrical))
+            services.add(Service("Plumbing Installation", "Professional installation of plumbing systems for residential and commercial properties. Includes pipe installations, fixture setup, water heater installation, and sewage system configuration.", R.drawable.plumbing))
+            services.add(Service("Plumbing Repair", "Expert repair services for plumbing systems in residential and commercial properties. Includes fixing leaks, repairing pipes, unclogging drains, and addressing water pressure issues.", R.drawable.plumbing))
+            services.add(Service("Plumbing Maintenance", "Comprehensive maintenance services for plumbing systems in residential and commercial properties. Includes regular inspections, cleaning, and upkeep to prevent issues and ensure proper functioning.", R.drawable.plumbing))
             return services
         }
     val electrical: List<Service>
@@ -58,9 +58,9 @@ object ServicesData{
     val ac: List<Service>
         get(){
             val services: MutableList<Service> = ArrayList()
-            services.add(Service("Air Conditioner Installation", "Professional installation of air conditioning units for residential and commercial properties. Includes setup, configuration, and testing to ensure optimal cooling and air quality.", R.drawable.electrical))
-            services.add(Service("Air Conditioner Repair", "Expert repair services for air conditioning units in residential and commercial properties. Includes fixing refrigerant leaks, repairing compressors, addressing airflow issues, and troubleshooting thermostat problems.", R.drawable.electrical))
-            services.add(Service("Air Conditioner Maintenance", "Comprehensive maintenance services for air conditioning units in residential and commercial properties. Includes regular inspections, cleaning, and upkeep to ensure efficient operation and extend the lifespan of the unit.", R.drawable.electrical))
+            services.add(Service("AC Installation", "Professional installation of air conditioning units for residential and commercial properties. Includes setup, configuration, and testing to ensure optimal cooling and air quality.", R.drawable.ac))
+            services.add(Service("AC Repair", "Expert repair services for air conditioning units in residential and commercial properties. Includes fixing refrigerant leaks, repairing compressors, addressing airflow issues, and troubleshooting thermostat problems.", R.drawable.ac))
+            services.add(Service("AC Maintenance", "Comprehensive maintenance services for air conditioning units in residential and commercial properties. Includes regular inspections, cleaning, and upkeep to ensure efficient operation and extend the lifespan of the unit.", R.drawable.ac))
             return services
         }
     val computer: List<Service>
@@ -70,21 +70,21 @@ object ServicesData{
                 Service(
                     "Computer Installation",
                     "Professional installation of computer systems for residential and commercial properties. Includes hardware setup, software installation, network configuration, and system testing.",
-                    R.drawable.electrical
+                    R.drawable.computer
                 )
             )
             services.add(
                 Service(
                     "Computer Repair",
                     "Expert repair services for computer systems in residential and commercial properties. Includes diagnosing hardware issues, troubleshooting software problems, fixing connectivity errors, and optimizing system performance.",
-                    R.drawable.electrical
+                    R.drawable.computer
                 )
             )
             services.add(
                 Service(
                     "Computer Maintenance",
                     "Comprehensive maintenance services for computer systems in residential and commercial properties. Includes regular updates, virus scans, system checks, and performance optimizations to ensure smooth operation and data security.",
-                    R.drawable.electrical
+                    R.drawable.computer
                 )
             )
             return services
@@ -96,21 +96,21 @@ object ServicesData{
                 Service(
                     "Refrigerator Installation",
                     "Professional installation of refrigerators for residential and commercial properties. Includes setup, configuration, temperature calibration, and testing to ensure proper cooling and food preservation.",
-                    R.drawable.electrical
+                    R.drawable.refrigerator
                 )
             )
             services.add(
                 Service(
                     "Refrigerator Repair",
                     "Expert repair services for refrigerators in residential and commercial properties. Includes fixing temperature issues, repairing ice makers, addressing door seal problems, and troubleshooting cooling malfunctions.",
-                    R.drawable.electrical
+                    R.drawable.refrigerator
                 )
             )
             services.add(
                 Service(
                     "Refrigerator Maintenance",
                     "Comprehensive maintenance services for refrigerators in residential and commercial properties. Includes cleaning, defrosting, checking door seals, and inspecting components to prevent breakdowns and ensure efficiency.",
-                    R.drawable.electrical
+                    R.drawable.refrigerator
                 )
             )
             return services
@@ -122,21 +122,21 @@ object ServicesData{
                 Service(
                     "Washing Machine Installation",
                     "Professional installation of washing machines for residential and commercial properties. Includes setup, configuration, cycle calibration, and testing to ensure proper cleaning and fabric care.",
-                    R.drawable.electrical
+                    R.drawable.washer
                 )
             )
             services.add(
                 Service(
                     "Washing Machine Repair",
                     "Expert repair services for washing machines in residential and commercial properties. Includes fixing cycle control issues, repairing drum malfunctions, addressing door seal problems, and troubleshooting drainage errors.",
-                    R.drawable.electrical
+                    R.drawable.washer
                 )
             )
             services.add(
                 Service(
                     "Washing Machine Maintenance",
                     "Comprehensive maintenance services for washing machines in residential and commercial properties. Includes cleaning, descaling, checking door seals, and inspecting components to prevent breakdowns and ensure performance.",
-                    R.drawable.electrical
+                    R.drawable.washer
                 )
             )
             return services

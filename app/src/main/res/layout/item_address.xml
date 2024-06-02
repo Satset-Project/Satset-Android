@@ -30,7 +30,8 @@
                 android:id="@+id/address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Address Line 1\nAddress Line 2" />
+                tools:text="Address Line 1\nAddress Line 2"
+                android:text="Address Line 1\nAddress Line 2"/>
 
         </LinearLayout>
 

@@ -46,14 +46,28 @@
         <item name="colorSurfaceContainer">@color/md_theme_surfaceContainer</item>
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
-        <item name="actionBarSize">@dimen/action_bar_size_small</item>
         <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="actionBarSize">@dimen/action_bar_size_small</item>
     </style>
     <style name="CircularShapeAppearance" parent="">
         <item name="cornerSize">50%</item>
     </style>
-    <dimen name="action_bar_size_small">50dp</dimen>
     <style name="MyActionBar" parent="Widget.AppCompat.ActionBar.Solid">
         <item name="background">@color/md_theme_background</item>
+    </style>
+    <dimen name="action_bar_size_small">50dp</dimen>
+    <style name="ShapeAppearance.BottomCorners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeBottomLeft">30dp</item>
+        <item name="cornerSizeBottomRight">30dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+    </style>
+    <style name="ShapeAppearance.Corners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeBottomLeft">10dp</item>
+        <item name="cornerSizeBottomRight">10dp</item>
+        <item name="cornerSizeTopLeft">10dp</item>
+        <item name="cornerSizeTopRight">10dp</item>
     </style>
 </resources>

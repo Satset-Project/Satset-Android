@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
+import android.widget.Toast
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -54,7 +55,7 @@ class DetailCategory : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentDetailCategoryBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        binding.photo.setImageResource(param1!!.logoResId)
+//        binding.photo.setImageResource(param1!!.logoResId)
         binding.title.text = param1!!.name
         binding.description.text = param1!!.description
         navView = requireActivity().findViewById(R.id.nav_view)
@@ -70,6 +71,11 @@ class DetailCategory : Fragment() {
             val fragment =  ServicesFragment.newInstance(selectedService)
             fragment.show(childFragmentManager, "service")
         }
+
+        binding.checkButton.setOnClickListener {
+            Toast.makeText(requireContext(), "Coming Soon", Toast.LENGTH_SHORT).show()
+        }
+
         return root
     }
 

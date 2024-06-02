@@ -9,7 +9,10 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 import java.util.Date
 
-
+@Parcelize
+data class Addresses(
+    val addresses: List<Address> = emptyList()
+) : Parcelable
 @Parcelize
 data class Address(
     var id: String? = "",

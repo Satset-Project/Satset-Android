@@ -2,13 +2,18 @@ package com.tikorst.satset.ui.home.detail
 
 import android.app.Dialog
 import android.content.DialogInterface.OnShowListener
+import android.content.Intent
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -16,6 +21,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tikorst.satset.R
 import com.tikorst.satset.data.Service
 import com.tikorst.satset.databinding.FragmentServicesBinding
+import com.tikorst.satset.ui.order.OrderActivity
+import com.tikorst.satset.ui.profile.address.AddAddressActivity
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,6 +38,7 @@ class ServicesFragment : BottomSheetDialogFragment() {
     // TODO: Rename and change types of parameters
     private var service: Service? = null
     private var _binding: FragmentServicesBinding? = null
+    private var dialogView: View? = null
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,20 +50,7 @@ class ServicesFragment : BottomSheetDialogFragment() {
             }
 
         }
-        dialog?.setOnShowListener{
-            val d = it as BottomSheetDialog
-            Log.d("onShow", "onShow")
-            val bottomSheet = d.findViewById<View>(R.id.serviceBottomSheet)
-            bottomSheet?.let {
-                val behavior = BottomSheetBehavior.from(it)
-                behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                val screenHeight = requireActivity().window.decorView.height
-                val targetHeight = (screenHeight * 0.45).toInt()
-                Log.d("targetHeight", targetHeight.toString())
-                it.layoutParams.height = targetHeight
-                behavior.peekHeight = targetHeight
-            }
-        }
+
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,9 +61,43 @@ class ServicesFragment : BottomSheetDialogFragment() {
         binding.serviceName.text = service!!.name
         binding.serviceDescription.text = service!!.description
 
+        binding.orderButton.setOnClickListener {
+            val intent = Intent(requireContext(), OrderActivity::class.java)
+            startActivity(intent)
+        }
+//        dialog?.setOnShowListener{
+//            Log.d("onCreateDialog", "onCreateDialogaaa")
+//            val sheetBehavior = BottomSheetBehavior.from(binding.serviceBottomSheet.rootView)
+//            sheetBehavior.let {
+//                sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+//                val screenHeight = requireActivity().window.decorView.height
+//                val targetHeight = (screenHeight * 0.45).toInt()
+//                Log.d("targetHeight", targetHeight.toString())
+//                sheetBehavior.peekHeight = targetHeight
+//            }
+//        }
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val dialog = dialog as BottomSheetDialog
+                val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
+                val behavior = BottomSheetBehavior.from(bottomSheet!!)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+                val newHeight = activity?.window?.decorView?.height?.times(0.35)?.toInt()
+                val viewGroupLayoutParams = bottomSheet.layoutParams
+                viewGroupLayoutParams.height = newHeight ?: 0
+                bottomSheet.layoutParams = viewGroupLayoutParams
+            }
+        })
+        dialogView = view
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -111,6 +140,7 @@ class ServicesFragment : BottomSheetDialogFragment() {
     }
 
     override fun onDestroyView() {
+        dialogView?.viewTreeObserver?.addOnGlobalLayoutListener(null)
         super.onDestroyView()
         _binding = null
     }

@@ -19,8 +19,8 @@ class AddressViewModel : ViewModel() {
         get() = _addressList
 
      fun loadAddresses(userId: String) {
+         val db = FirebaseFirestore.getInstance()
          viewModelScope.launch{
-             val db = FirebaseFirestore.getInstance()
              val addressesCollection = db.collection("users")
                  .document(userId)
                  .collection("addresses")

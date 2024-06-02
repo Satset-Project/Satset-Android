@@ -31,19 +31,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guidelineHorizontal"
         tools:text="Categories" />
-    <GridView
-        android:id="@+id/serviceCategoriesGridView"
+
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:id="@+id/serviceCategoriesCardView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        -->
+<!--        android:layout_margin="16dp"-->
+<!--        app:cardCornerRadius="20dp">-->
+<!--        -->
+<!--    </androidx.cardview.widget.CardView>-->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:numColumns="2"
-        android:columnWidth="100dp"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
-        android:padding="10dp"
-        android:gravity="center"
-        android:layout_marginTop="20dp"
+        app:cardCornerRadius="20dp"
+        app:strokeWidth="0dp"
+        android:layout_margin="16dp"
         app:layout_constraintTop_toBottomOf="@id/messageTextView"
-        />
+        android:backgroundTint="@color/md_theme_onPrimary">
+
+        <GridView
+            android:id="@+id/serviceCategoriesGridView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+            android:columnWidth="100dp"
+            android:gravity="center"
+            android:horizontalSpacing="10dp"
+            android:numColumns="3"
+            android:paddingBottom="10dp"
+            android:verticalSpacing="10dp" />
+    </com.google.android.material.card.MaterialCardView>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineHorizontal"
         android:layout_width="wrap_content"

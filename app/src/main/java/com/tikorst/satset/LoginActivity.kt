@@ -21,9 +21,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.core.view.View
 import com.google.firebase.ktx.Firebase
 import com.tikorst.satset.databinding.ActivityLoginBinding
+import java.lang.String
 
 
 class LoginActivity : AppCompatActivity() {
@@ -49,6 +49,9 @@ class LoginActivity : AppCompatActivity() {
         auth = Firebase.auth
         loginButton()
         registerButton()
+        val colorInt = binding.messageTextView.currentTextColor
+        val colorHex = String.format("#%08X", (-0x1 and colorInt))
+        Log.d("Login color", colorHex)
     }
 
     private fun registerButton() {

@@ -24,7 +24,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="32dp"
-      android:layout_marginTop="32dp"
+      android:layout_marginTop="8dp"
       android:layout_marginEnd="32dp"
       android:text="Register"
       android:textSize="20sp"
@@ -64,7 +64,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textEmailAddress"
+        android:inputType="textPersonName"
         tools:ignore="SpeakableTextPresentCheck"
         android:clickable="true"
         android:focusable="true"
@@ -77,7 +77,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="32dp"
-      android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
       android:text="@string/email"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/nameEditTextLayout"
@@ -109,6 +109,40 @@
   </com.google.android.material.textfield.TextInputLayout>
 
   <TextView
+      android:id="@+id/phoneTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="32dp"
+      android:layout_marginTop="8dp"
+      android:text="Phone"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/emailEditTextLayout"
+      tools:alpha="100" />
+  <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/phoneEditTextLayout"
+      style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="32dp"
+      android:layout_marginEnd="32dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/phoneTextView"
+      app:startIconDrawable="@drawable/baseline_phone_24"
+      tools:alpha="100">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/ed_register_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="phone"
+        tools:ignore="SpeakableTextPresentCheck"
+        android:clickable="true"
+        android:focusable="true"
+        android:longClickable="true" />
+  </com.google.android.material.textfield.TextInputLayout>
+  <TextView
       android:id="@+id/passwordTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -116,7 +150,7 @@
       android:layout_marginTop="8dp"
       android:text="@string/password"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/emailEditTextLayout"
+      app:layout_constraintTop_toBottomOf="@+id/phoneEditTextLayout"
       tools:alpha="100" />
 
   <com.google.android.material.textfield.TextInputLayout
@@ -145,17 +179,19 @@
         android:longClickable="true" />
   </com.google.android.material.textfield.TextInputLayout>
 
+
   <Button
       android:id="@+id/registerButton"
       android:layout_width="0dp"
-      android:layout_height="64dp"
+      android:layout_height="60dp"
       android:layout_marginStart="32dp"
       android:layout_marginTop="32dp"
       android:layout_marginEnd="32dp"
       android:text="Register"
-      android:textStyle="bold"
       android:textSize="16sp"
+      android:textStyle="bold"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/passwordEditTextLayout"
       tools:alpha="100" />
@@ -164,13 +200,15 @@
       android:id="@+id/loginPrompt"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
+      android:layout_marginTop="4dp"
       android:layout_marginEnd="32dp"
       android:textSize="14sp"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.569"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/registerButton"
       tools:text="Have an account? Login" />
+
   <androidx.constraintlayout.widget.Guideline
       android:id="@+id/guidelineHorizontal"
       android:layout_width="wrap_content"
