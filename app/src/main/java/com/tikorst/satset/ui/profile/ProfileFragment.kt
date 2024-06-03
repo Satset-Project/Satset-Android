@@ -14,6 +14,7 @@ import com.google.firebase.ktx.Firebase
 import com.tikorst.satset.LoginActivity
 import com.tikorst.satset.databinding.FragmentProfileBinding
 import com.tikorst.satset.ui.profile.address.AddressActivity
+import com.tikorst.satset.R
 
 class ProfileFragment : Fragment() {
 
@@ -42,16 +43,21 @@ class ProfileFragment : Fragment() {
         auth = Firebase.auth
         val firebaseUser = auth.currentUser
         if (firebaseUser != null) {
-            binding.text.setText("Welcome, ${firebaseUser.displayName}")
+
+            binding.nameTextView.text = firebaseUser.displayName
+            binding.emailTextView.text = firebaseUser.email
+            if(firebaseUser.photoUrl != null)
             Glide.with(this)
                 .load(firebaseUser.photoUrl)
                 .into(binding.profileImageView)
+            else
+                binding.profileImageView.setImageResource(R.drawable.avatar)
 
         }
         binding.logoutButton.setOnClickListener {
             signOut()
         }
-        binding.addressButton.setOnClickListener {
+        binding.addressTextView.setOnClickListener {
             val intent = Intent(activity, AddressActivity::class.java)
             startActivity(intent)
         }

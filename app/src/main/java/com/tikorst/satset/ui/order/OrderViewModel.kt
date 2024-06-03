@@ -25,6 +25,12 @@ class OrderViewModel : ViewModel() {
     private val _error = MutableLiveData<Boolean>()
     val error: LiveData<Boolean>
         get() = _error
+    private val _status = MutableLiveData<String>()
+    val status: LiveData<String>
+        get() = _status
+    private val _orderId = MutableLiveData<String>()
+    val orderId: LiveData<String>
+        get() = _orderId
     fun loadAddresses(userId: String) {
         val db = FirebaseFirestore.getInstance()
         _loading.value = true
@@ -57,7 +63,7 @@ class OrderViewModel : ViewModel() {
         val db = FirebaseFirestore.getInstance()
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.reference
-
+        _loading.value = true
         viewModelScope.launch {
 
             val imageUri = Uri.fromFile(image)
@@ -70,12 +76,15 @@ class OrderViewModel : ViewModel() {
                     saveOrderToFirestore(orderWithImageUrl)
                 }.addOnFailureListener {
                     _error.value = true
+                    _loading.value = false
                 }
             }.addOnFailureListener {
                 _error.value = true
+                _loading.value = false
             }
 
         }
+
     }
 
     private fun saveOrderToFirestore(order: Order) {
@@ -83,12 +92,28 @@ class OrderViewModel : ViewModel() {
         val orderCollection = db.collection("orders")
 
         orderCollection.add(order)
-            .addOnSuccessListener {
+            .addOnSuccessListener {documentReference ->
                 _error.value = false
+                _orderId.value = documentReference.id
+                _loading.value = false
             }
             .addOnFailureListener {
                 _error.value = true
+                _loading.value = false
             }
+    }
+    fun checkOrderStatus(orderId: String) {
+        viewModelScope.launch {
+            val db = FirebaseFirestore.getInstance()
+            val orderCollection = db.collection("orders").document(orderId)
+            orderCollection
+                .get()
+                .addOnSuccessListener {
+                    val status = it.getString("status")
+                    _status.value = status!!
+                }
+        }
+
     }
 
 }

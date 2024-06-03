@@ -1,6 +1,7 @@
 package com.tikorst.satset.ui.order
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -14,16 +15,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.tikorst.satset.MainActivity
 import com.tikorst.satset.R
 import com.tikorst.satset.data.Address
 import com.tikorst.satset.data.Addresses
 import com.tikorst.satset.data.Order
 import com.tikorst.satset.databinding.ActivityOrderBinding
-import java.io.File
 import java.util.Date
 
 
@@ -34,6 +36,9 @@ class OrderActivity : AppCompatActivity(), AddressFragment.AddressListener, Medi
     private var currentImageUri: Uri? = null
     private  var address: List<Address> = emptyList()
     private var addressId: String? = null
+    private var serviceType: String? = null
+    private var currentFragment: Int = 0
+    private var orderId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,18 +55,22 @@ class OrderActivity : AppCompatActivity(), AddressFragment.AddressListener, Medi
         setupAddress()
         setupImage()
         order()
+        loading(true)
+
     }
 
     private fun order() {
         binding.orderButton.setOnClickListener{
+            loading(true)
             val currentUser = auth.currentUser
             currentUser?.let {
                 val imageFile = uriToFile(currentImageUri!!, this).reduceFileImage()
                 val order = Order(
                     userId = it.uid,
-                    technicianId = "Test",
                     addressId = addressId,
                     description = binding.descriptionEditText.text.toString(),
+                    status = "Pending",
+                    serviceType = serviceType,
                     timestamp = Date()
                 )
                 viewModel.order(order, imageFile)
@@ -96,6 +105,15 @@ class OrderActivity : AppCompatActivity(), AddressFragment.AddressListener, Medi
         viewModel.loading.observe(this){
             loading(it)
         }
+        viewModel.orderId.observe(this){
+            Log.d("OrderActivity", "Order id: $it")
+            val intent = Intent(this, OrderViewActivity::class.java)
+            intent.putExtra("order_id", it)
+            intent.putExtra("service", serviceType)
+            intent.putExtra("tag", "OrderActivity")
+            startActivity(intent)
+
+        }
         viewModel.addressList.observe(this){
             if(it.isEmpty()){
                 binding.apply {
@@ -122,17 +140,21 @@ class OrderActivity : AppCompatActivity(), AddressFragment.AddressListener, Medi
         if(loading == true) {
             binding.addressView.visibility = View.GONE
             binding.progressBar.visibility = View.VISIBLE
+            binding.progressBarMain.visibility = View.VISIBLE
         } else {
             binding.addressView.visibility = View.VISIBLE
             binding.progressBar.visibility = View.GONE
+            binding.progressBarMain.visibility = View.GONE
         }
         return loading
     }
 
     private fun setup() {
         enableEdgeToEdge()
+        val intent = intent
+        serviceType = intent.getStringExtra("service")
         supportActionBar?.apply{
-            title = "Order"
+            title = "Order - $serviceType"
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f
         }
@@ -211,4 +233,15 @@ class OrderActivity : AppCompatActivity(), AddressFragment.AddressListener, Medi
                 startCamera()
             }
         }
+    private fun navigateToHomeFragment() {
+        // Pop the back stack until reaching the HomeFragment
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        currentFragment = 0
+    }
 }

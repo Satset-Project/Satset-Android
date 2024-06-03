@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
 import android.widget.Toast
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -56,6 +57,7 @@ class DetailCategory : Fragment() {
         _binding = FragmentDetailCategoryBinding.inflate(inflater, container, false)
         val root: View = binding.root
 //        binding.photo.setImageResource(param1!!.logoResId)
+        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false);
         binding.title.text = param1!!.name
         binding.description.text = param1!!.description
         navView = requireActivity().findViewById(R.id.nav_view)
