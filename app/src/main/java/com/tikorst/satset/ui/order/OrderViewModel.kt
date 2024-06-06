@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.getField
 import com.google.firebase.storage.FirebaseStorage
 import com.tikorst.satset.data.Address
 import com.tikorst.satset.data.DetailAddress
@@ -25,12 +26,15 @@ class OrderViewModel : ViewModel() {
     private val _error = MutableLiveData<Boolean>()
     val error: LiveData<Boolean>
         get() = _error
-    private val _status = MutableLiveData<String>()
-    val status: LiveData<String>
-        get() = _status
+    private val _order = MutableLiveData<Order>()
+    val order: LiveData<Order>
+        get() = _order
     private val _orderId = MutableLiveData<String>()
     val orderId: LiveData<String>
         get() = _orderId
+    private val _address= MutableLiveData<DetailAddress>()
+    val address: LiveData<DetailAddress>
+        get() = _address
     fun loadAddresses(userId: String) {
         val db = FirebaseFirestore.getInstance()
         _loading.value = true
@@ -109,8 +113,24 @@ class OrderViewModel : ViewModel() {
             orderCollection
                 .get()
                 .addOnSuccessListener {
-                    val status = it.getString("status")
-                    _status.value = status!!
+                    val order = it.toObject(Order::class.java) as Order
+                    _order.value = order
+                }
+        }
+
+    }
+    fun getAddress(addressId: String, userId: String) {
+        viewModelScope.launch {
+            val db = FirebaseFirestore.getInstance()
+            val addressCollection = db.collection("users")
+                .document(userId)
+                .collection("addresses")
+                .document(addressId)
+            addressCollection
+                .get()
+                .addOnSuccessListener {documentSnapshot ->
+                    val address = documentSnapshot.toObject(DetailAddress::class.java) as DetailAddress
+                    _address.value = address
                 }
         }
 

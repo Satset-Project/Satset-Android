@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
@@ -15,9 +16,12 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.tikorst.satset.databinding.ActivityMainBinding
+import com.tikorst.satset.technician.MainTechnicianActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -42,6 +46,7 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
+        checkUserType(firebaseUser)
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_home)
@@ -54,6 +59,26 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    private fun checkUserType(firebaseUser: FirebaseUser) {
+        val db = FirebaseFirestore.getInstance()
+        val technicianRef = db.collection("technicians").document(firebaseUser.uid)
+        technicianRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    startActivity(
+                        Intent(
+                            this,
+                            MainTechnicianActivity::class.java
+                        )
+                    )
+                    finish()
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("LoginActivity", "Error getting documents.", e)
+            }
     }
 
 }

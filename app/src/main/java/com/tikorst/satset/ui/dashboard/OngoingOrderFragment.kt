@@ -88,7 +88,16 @@ class OngoingOrderFragment : Fragment() {
             loading(it)
         }
         viewModel.orders.observe(viewLifecycleOwner){
-            setOrdersList(it)
+            if(it.isNotEmpty()){
+                setOrdersList(it)
+                binding.noOngoingOrders.visibility = View.GONE
+            }
+            else{
+                if(binding.progressBar.visibility == View.VISIBLE){
+                    binding.noOngoingOrders.visibility = View.VISIBLE
+                }
+            }
+
         }
 
     }

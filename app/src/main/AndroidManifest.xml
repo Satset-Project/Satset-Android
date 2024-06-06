@@ -23,6 +23,13 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
+            android:name=".message.ChatActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" />
+        <activity
+            android:name=".technician.MainTechnicianActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.order.OrderViewActivity"
             android:exported="false" />
         <activity
@@ -41,7 +48,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA30_6cyMs-k-21F4e0ImGrhEB3Q-IoyuI" />
+            android:value="AIzaSyC_mHHVLOXrhC82LOz9iKDZNZLgqnnTSBQ" />
 
         <activity
             android:name=".ui.profile.address.AddAddressActivity"
@@ -52,6 +59,12 @@
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".technician.TechnicianRegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".technician.OrderTechnicianActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"

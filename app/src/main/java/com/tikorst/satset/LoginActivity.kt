@@ -21,8 +21,10 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.tikorst.satset.databinding.ActivityLoginBinding
+import com.tikorst.satset.technician.MainTechnicianActivity
 import java.lang.String
 
 
@@ -74,9 +76,28 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUI(currentUser: FirebaseUser?) {
-        if (currentUser != null){
-            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-            finish()
+        val db = FirebaseFirestore.getInstance()
+
+        if (currentUser != null) {
+            val technicianRef = db.collection("technicians").document(currentUser.uid)
+            technicianRef.get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        startActivity(
+                            Intent(
+                                this@LoginActivity,
+                                MainTechnicianActivity::class.java
+                            )
+                        )
+                        finish()
+                    } else {
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.w("LoginActivity", "Error getting documents.", e)
+                }
         }
     }
 

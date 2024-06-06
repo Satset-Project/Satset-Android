@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity">
+    tools:context=".technician.TechnicianRegisterActivity">
   <ImageView
       android:id="@+id/imageView"
       android:layout_width="0dp"
@@ -26,7 +26,7 @@
       android:layout_marginStart="32dp"
       android:layout_marginTop="8dp"
       android:layout_marginEnd="32dp"
-      android:text="Register"
+      android:text="Technician Register"
       android:textSize="20sp"
       android:textStyle="bold"
       app:layout_constraintEnd_toEndOf="parent"
@@ -77,7 +77,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+      android:layout_marginTop="8dp"
       android:text="@string/email"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/nameEditTextLayout"
@@ -107,7 +107,6 @@
         android:focusable="true"
         android:longClickable="true" />
   </com.google.android.material.textfield.TextInputLayout>
-
 
   <TextView
       android:id="@+id/phoneTextView"
@@ -196,30 +195,6 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/passwordEditTextLayout"
       tools:alpha="100" />
-
-  <TextView
-      android:id="@+id/loginPrompt"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="4dp"
-      android:layout_marginEnd="32dp"
-      android:textSize="14sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.569"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/registerButton"
-      tools:text="Have an account? Login" />
-  <TextView
-      android:id="@+id/registerTech"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="4dp"
-      android:textSize="14sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/loginPrompt"
-      android:text="Register as Technician" />
-
   <androidx.constraintlayout.widget.Guideline
       android:id="@+id/guidelineHorizontal"
       android:layout_width="wrap_content"
@@ -229,4 +204,4 @@
       app:layout_constraintGuide_percent="0.30"
       app:layout_constraintStart_toStartOf="parent" />
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,11 +17,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.firestore.FirebaseFirestore
 import com.tikorst.satset.MainActivity
 import com.tikorst.satset.R
 import com.tikorst.satset.databinding.ActivityOrderBinding
 import com.tikorst.satset.databinding.ActivityOrderViewBinding
 import com.tikorst.satset.databinding.FragmentOrderBinding
+import com.tikorst.satset.message.ChatActivity
 
 class OrderViewActivity : AppCompatActivity() {
     private var order_id: String? = null
@@ -48,11 +50,32 @@ class OrderViewActivity : AppCompatActivity() {
         hourglassBottom = binding.hourglassBottom
         val bottomsheet: LinearLayout = binding.bottomSheet
         bottomSheetBehavior = BottomSheetBehavior.from(bottomsheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         bottomSheetBehavior.peekHeight = 300
-
+        binding.chatImageView.setOnClickListener {
+            val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra("orderId", order_id)
+            intent.putExtra("ref", binding.technicianName.text.toString())
+            startActivity(intent)
+        }
     }
 
+    private fun getTech(order_id: String?) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("orders").document(order_id!!).get().addOnSuccessListener {
+            val tech_id = it.getString("technicianId")
+            if (tech_id != null) {
+                db.collection("technicians").document(tech_id).get().addOnSuccessListener {
+                    binding.technicianName.text = it.getString("name")
+                    binding.rating.text = it.getString("rating")
+                }
+                binding.technicianContainer.visibility = View.VISIBLE
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }else{
+                binding.technicianContainer.visibility = View.GONE
+            }
+        }
+    }
 
 
     private fun setup() {
@@ -92,15 +115,23 @@ class OrderViewActivity : AppCompatActivity() {
     private fun viewModelSetup() {
         handler = Handler()
         viewModel = ViewModelProvider(this).get(OrderViewModel::class.java)
-        viewModel.status.observe(this){
-            if(it == "Pending"){
+        viewModel.order.observe(this){
+            if(it.status == "Pending"){
                 hourglassBottom.visibility = View.VISIBLE
+                binding.chatUsImageView.visibility = View.GONE
+                binding.textView.visibility = View.VISIBLE
                 startHourglassAnimation()
+                binding.technicianContainer.visibility = View.GONE
             }else{
+                getTech(order_id!!)
                 hourglassBottom.clearAnimation()
                 hourglassBottom.visibility = View.GONE
+                binding.chatUsImageView.visibility = View.VISIBLE
+                binding.textView.visibility = View.GONE
             }
-            binding.textView.text = it
+            viewModel.getAddress(it.addressId!!, it.userId!!)
+
+            binding.descriptionTextView.text = it.description
         }
         statusCheckRunnable = object : Runnable {
             override fun run() {
@@ -109,9 +140,14 @@ class OrderViewActivity : AppCompatActivity() {
                 handler.postDelayed(this, 3000)
             }
         }
-
         handler.post(statusCheckRunnable)
+        viewModel.address.observe(this){
+            binding.label.text = it.label
+            val formattedAddress = getString(R.string.detail_address, it.address, it.generatedAddress)
+            binding.address.text = formattedAddress
+        }
     }
+
     override fun onPause() {
         super.onPause()
         hourglassBottom.clearAnimation()

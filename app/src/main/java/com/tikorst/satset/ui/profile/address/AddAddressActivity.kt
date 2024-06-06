@@ -215,9 +215,6 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback {
                 binding.locationIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.baseline_location_searching_24))
             }
         }
-
-
-
     }
     private fun saveAddress(userId: String) {
         val address = binding.edAddress.text.toString()

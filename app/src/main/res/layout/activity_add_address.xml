@@ -39,14 +39,14 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:cardCornerRadius="8dp"
+        app:cardCornerRadius="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guidelineHorizontal">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp">
+            android:padding="16dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,24 +55,46 @@
                 tools:text="Detected Address"
                 android:drawableStart="@drawable/baseline_my_location_24"
                 android:drawablePadding="8dp"/>
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ed_label"
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/detected_address"
-                android:hint="Label As" />
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ed_address"
+                android:layout_marginTop="8dp"
+                android:background="@color/md_theme_onPrimary"
+                android:layout_below="@+id/detected_address">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ed_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="start|top"
+                    android:hint="Label" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout2"
                 android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ed_label"
-                android:hint="Detail Address" />
+                android:background="@color/md_theme_onPrimary"
+                android:layout_below="@+id/textInputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ed_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="start|top"
+                    android:hint="Address" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
+                android:layout_marginTop="16dp"
                 android:id="@+id/buttonSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ed_address"
+                android:layout_below="@+id/textInputLayout2"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:text="Save Address" />
@@ -86,6 +108,6 @@
         android:layout_height="64dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.75"
+        app:layout_constraintGuide_percent="0.70"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout  >
