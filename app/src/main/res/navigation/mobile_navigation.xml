@@ -7,24 +7,24 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.tikorst.satset.ui.home.HomeFragment"
+        android:name="com.tikorst.satset.ui.customer.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.tikorst.satset.ui.dashboard.DashboardFragment"
+        android:name="com.tikorst.satset.ui.customer.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.tikorst.satset.ui.profile.ProfileFragment"
+        android:name="com.tikorst.satset.ui.customer.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/navigation_detail_category"
-        android:name="com.tikorst.satset.ui.home.detail.DetailCategory"
+        android:name="com.tikorst.satset.ui.customer.home.detail.DetailCategory"
         android:label="Detail Category"
         tools:layout="@layout/fragment_detail_category" />
 </navigation>

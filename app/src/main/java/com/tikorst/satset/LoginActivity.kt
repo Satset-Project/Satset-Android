@@ -15,6 +15,7 @@ import android.util.Patterns
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -23,16 +24,18 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.tikorst.satset.data.UserModel
 import com.tikorst.satset.databinding.ActivityLoginBinding
-import com.tikorst.satset.technician.MainTechnicianActivity
-import java.lang.String
+import com.tikorst.satset.ui.technician.MainTechnicianActivity
 
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
-
+    private val viewModel by viewModels<AuthViewModel> {
+        ViewModelFactory.getInstance(this)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -46,7 +49,6 @@ class LoginActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        // Configure Google Sign In
 
         auth = Firebase.auth
         loginButton()
@@ -83,6 +85,7 @@ class LoginActivity : AppCompatActivity() {
             technicianRef.get()
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()) {
+                        viewModel.saveSession(UserModel(true))
                         startActivity(
                             Intent(
                                 this@LoginActivity,
@@ -91,6 +94,7 @@ class LoginActivity : AppCompatActivity() {
                         )
                         finish()
                     } else {
+                        viewModel.saveSession(UserModel(false))
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         finish()
                     }

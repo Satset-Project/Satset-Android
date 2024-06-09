@@ -22,7 +22,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.tikorst.satset.databinding.ActivityRegisterBinding
-import com.tikorst.satset.technician.TechnicianRegisterActivity
+import com.tikorst.satset.ui.technician.TechnicianRegisterActivity
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth

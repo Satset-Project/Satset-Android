@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".technician.TechnicianRegisterActivity">
+    tools:context=".ui.technician.TechnicianRegisterActivity">
   <ImageView
       android:id="@+id/imageView"
       android:layout_width="0dp"

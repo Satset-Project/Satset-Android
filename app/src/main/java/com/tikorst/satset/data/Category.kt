@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.tikorst.satset.R
 import kotlinx.parcelize.Parcelize
 
+
 @Parcelize
 class Category(
     var name: String,
@@ -39,6 +40,14 @@ class Service(
 ) : Parcelable
 
 object ServicesData{
+    fun findServiceDrawable(serviceType: String): Int? {
+        val allServices = listOf(
+            plumbing, electrical, ac, computer, refrigerator, washer
+        ).flatten() // Flatten the list of lists into a single list of services
+
+        val service = allServices.find { it.name.equals(serviceType, ignoreCase = true) }
+        return service?.logoResId
+    }
     val plumbing: List<Service>
         get(){
             val services: MutableList<Service> = ArrayList()

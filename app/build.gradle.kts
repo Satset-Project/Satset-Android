@@ -77,4 +77,6 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("com.firebaseui:firebase-ui-firestore:8.0.2")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("com.google.maps:google-maps-services:2.2.0")
 }

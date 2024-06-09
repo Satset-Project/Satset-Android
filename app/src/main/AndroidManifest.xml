@@ -23,10 +23,20 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
-            android:name=".ui.order.OrderViewActivity"
+            android:name=".ui.customer.MainCustomerActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.order.OrderActivity"
+            android:name=".ui.message.ChatActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.technician.MainTechnicianActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.customer.order.OrderViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.customer.order.OrderActivity"
             android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
@@ -44,14 +54,20 @@
             android:value="" />
 
         <activity
-            android:name=".ui.profile.address.AddAddressActivity"
+            android:name=".ui.customer.profile.address.AddAddressActivity"
             android:exported="false"
             android:label="@string/title_activity_add_address" />
         <activity
-            android:name=".ui.profile.address.AddressActivity"
+            android:name=".ui.customer.profile.address.AddressActivity"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.technician.TechnicianRegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.technician.OrderTechnicianActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
