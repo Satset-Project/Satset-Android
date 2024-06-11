@@ -94,4 +94,9 @@ class MainTechnicianViewModel(private val userPreference: UserPreference) : View
             db.collection("technicians").document(technicianId).update("latitude", latitude, "longitude", longitude)
         }
     }
+    fun finishOrder(orderId: String) {
+        viewModelScope.launch {
+            db.collection("orders").document(orderId).update("status", "completed")
+        }
+    }
 }

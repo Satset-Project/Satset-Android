@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -62,19 +63,27 @@ class OrderActivity : AppCompatActivity(), AddressFragment.AddressListener,
 
     private fun order() {
         binding.orderButton.setOnClickListener{
-            loading(true)
-            val currentUser = auth.currentUser
-            currentUser?.let {
-                val imageFile = uriToFile(currentImageUri!!, this).reduceFileImage()
-                val order = Order(
-                    userId = it.uid,
-                    addressId = addressId,
-                    description = binding.descriptionEditText.text.toString(),
-                    status = "Pending",
-                    serviceType = serviceType,
-                    timestamp = Date()
-                )
-                viewModel.order(order, imageFile)
+            if(currentImageUri == null){
+                Toast.makeText(this, "Please input image", Toast.LENGTH_SHORT).show()
+            }else if(binding.descriptionEditText.text.toString().isEmpty()){
+                Toast.makeText(this, "Please input description", Toast.LENGTH_SHORT).show()
+            }else if(addressId == null){
+                Toast.makeText(this, "Please input address", Toast.LENGTH_SHORT).show()
+            }else{
+                loading(true)
+                val currentUser = auth.currentUser
+                currentUser?.let {
+                    val imageFile = uriToFile(currentImageUri!!, this).reduceFileImage()
+                    val order = Order(
+                        userId = it.uid,
+                        addressId = addressId,
+                        description = binding.descriptionEditText.text.toString(),
+                        status = "Pending",
+                        serviceType = serviceType,
+                        timestamp = Date()
+                    )
+                    viewModel.order(order, imageFile)
+                }
             }
         }
     }
@@ -113,7 +122,7 @@ class OrderActivity : AppCompatActivity(), AddressFragment.AddressListener,
             intent.putExtra("service", serviceType)
             intent.putExtra("tag", "OrderActivity")
             startActivity(intent)
-
+            finish()
         }
         viewModel.addressList.observe(this){
             if(it.isEmpty()){

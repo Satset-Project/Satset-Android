@@ -29,14 +29,18 @@ class OrderListAdapter : ListAdapter<OrderID, OrderListAdapter.OrderViewHolder>(
             binding.label.text = order.order?.serviceType
             binding.status.text = order.order?.status
             binding.description.text = order.order?.description
-            itemView.setOnClickListener{
-                val intent = Intent(context, OrderViewActivity::class.java)
-                intent.putExtra("order_id", order.orderId)
-                intent.putExtra("service", order.order?.serviceType)
-                intent.putExtra("tag", "Dashboard")
-                context.startActivity(intent)
+            if(order.order?.status != "completed"){
+                itemView.setOnClickListener{
+                    val intent = Intent(context, OrderViewActivity::class.java)
+                    intent.putExtra("order_id", order.orderId)
+                    intent.putExtra("service", order.order?.serviceType)
+                    intent.putExtra("tag", "Dashboard")
+                    context.startActivity(intent)
 
+                }
             }
+
+
         }
     }
     companion object {

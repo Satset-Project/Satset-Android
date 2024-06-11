@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -52,7 +53,41 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
     private var routePolyline: Polyline? = null
     private var completeRoutePoints = mutableListOf<LatLng>()
     private var userMarker: Marker? = null
+    private var techLocation: LatLng? = null
     private val boundsBuilder = LatLngBounds.Builder()
+    private val geoApiContext: GeoApiContext = GeoApiContext.Builder()
+        .apiKey("AIzaSyBYCKwg9IXHYwC7dRfa5KSYL5rE1bwwH3k")
+        .build()
+    private val callback = object : PendingResult.Callback<DirectionsResult> {
+        override fun onResult(result: DirectionsResult?) {
+            result?.routes?.let { routes ->
+                for (route in routes) {
+                    val points = mutableListOf<LatLng>()
+                    route.legs.forEach { leg ->
+                        leg.steps.forEach { step ->
+                            step.polyline.decodePath().forEach { point ->
+                                points.add(LatLng(point.lat, point.lng))
+                            }
+                        }
+                    }
+                    completeRoutePoints = points
+                    runOnUiThread {
+                        routePolyline?.remove()
+
+                        routePolyline = mMap.addPolyline(
+                            PolylineOptions()
+                                .addAll(points)
+                                .color(Color.BLUE)
+                                .width(10f)
+                        )
+                    }
+                }
+            }
+        }
+        override fun onFailure(e: Throwable?) {
+
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup()
@@ -158,6 +193,20 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         viewModel.orderListener(order_id!!)
         viewModel.address.observe(this){
+            if(address == null && techLocation != null){
+                Utils.fetchDirections(geoApiContext,  techLocation!!,LatLng(it.latitude!!, it.longitude!!), callback)
+                boundsBuilder.include(LatLng(it.latitude, it.longitude))
+                boundsBuilder.include(techLocation!!)
+                val bounds: LatLngBounds = boundsBuilder.build()
+                mMap.animateCamera(
+                    CameraUpdateFactory.newLatLngBounds(
+                        bounds,
+                        resources.displayMetrics.widthPixels,
+                        resources.displayMetrics.heightPixels,
+                        200
+                    )
+                )
+            }
             address = it
             mMap.addMarker(
                 MarkerOptions()
@@ -166,6 +215,7 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
             binding.label.text = it.label
             val formattedAddress = getString(R.string.detail_address, it.address, it.generatedAddress)
             binding.address.text = formattedAddress
+
         }
 
     }
@@ -197,52 +247,13 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
             if(techLocation == null){
                 return@observe
             }else{
-                val geoApiContext = GeoApiContext.Builder()
-                    .apiKey("")
-                    .build()
-                val callback = object : PendingResult.Callback<DirectionsResult> {
-                    override fun onResult(result: DirectionsResult?) {
-                        result?.routes?.let { routes ->
-                            for (route in routes) {
-                                val points = mutableListOf<LatLng>()
-                                route.legs.forEach { leg ->
-                                    leg.steps.forEach { step ->
-                                        step.polyline.decodePath().forEach { point ->
-                                            points.add(LatLng(point.lat, point.lng))
-                                        }
-                                    }
-                                }
-                                completeRoutePoints = points
-                                runOnUiThread {
-                                    routePolyline?.remove()
-                                    updateLocationOnMap(techLocation)
-                                    routePolyline = mMap.addPolyline(
-                                        PolylineOptions()
-                                            .addAll(points)
-                                            .color(Color.BLUE)
-                                            .width(10f)
-                                    )
-                                }
-                            }
-                        }
+                this.techLocation = techLocation
+                updateLocationOnMap(techLocation)
+                if(routePolyline != null){
+                    updateRoutePolyline(techLocation)
+                    if( Utils.calculateDistance(techLocation,routePolyline?.points!![0] ) > 100){
+                        Utils.fetchDirections(geoApiContext, techLocation, LatLng(address?.latitude!!, address?.longitude!!), callback)
                     }
-                    override fun onFailure(e: Throwable?) {
-
-                    }
-                }
-                if(address != null){
-                    Utils.fetchDirections(geoApiContext,  techLocation,LatLng(address?.latitude!!, address?.longitude!!), callback)
-                    boundsBuilder.include(LatLng(address?.latitude!!, address?.longitude!!))
-                    boundsBuilder.include(techLocation)
-                    val bounds: LatLngBounds = boundsBuilder.build()
-                    mMap.animateCamera(
-                        CameraUpdateFactory.newLatLngBounds(
-                            bounds,
-                            resources.displayMetrics.widthPixels,
-                            resources.displayMetrics.heightPixels,
-                            300
-                        )
-                    )
                 }
             }
         }
@@ -269,5 +280,16 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
         } else {
             userMarker?.position = userLatLng
         }
+    }
+    private fun updateRoutePolyline(driverLocation: LatLng) {
+        completeRoutePoints = routePolyline?.points!!
+        val points = completeRoutePoints.take(10)
+        for (point in points) {
+            if (Utils.driverHasPassed(driverLocation, point)) {
+                completeRoutePoints.remove(point)
+            }
+        }
+        routePolyline?.points = completeRoutePoints
+
     }
 }

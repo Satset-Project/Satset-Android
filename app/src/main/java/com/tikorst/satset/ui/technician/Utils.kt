@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.location.Location
 import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
@@ -24,6 +25,12 @@ import com.google.maps.GeoApiContext
 import com.google.maps.PendingResult
 import com.google.maps.model.DirectionsResult
 import com.google.maps.model.TravelMode
+import java.lang.Math.pow
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 object Utils {
     fun vectorToBitmap(@DrawableRes id: Int, @ColorInt color: Int, resources: Resources): BitmapDescriptor {
@@ -44,7 +51,7 @@ object Utils {
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
      fun fetchDirections(geoApiContext: GeoApiContext, origin: LatLng, destination: LatLng, callback: PendingResult.Callback<DirectionsResult>) {
-
+        Log.d("Directions", "Fetching directions")
         val request = DirectionsApiRequest(geoApiContext)
         request.origin(com.google.maps.model.LatLng(origin.latitude, origin.longitude))
         request.destination(com.google.maps.model.LatLng(destination.latitude, destination.longitude))
@@ -89,4 +96,15 @@ object Utils {
         }
     }
 
+    fun driverHasPassed(driverLocation: LatLng, point: LatLng): Boolean {
+        val distance = calculateDistance(driverLocation, point)
+        Log.d("distance", distance.toString())
+
+        return distance <= 7
+    }
+    fun calculateDistance(point1: LatLng, point2: LatLng): Float {
+        val results = FloatArray(1)
+        Location.distanceBetween(point1.latitude, point1.longitude, point2.latitude, point2.longitude, results)
+        return results[0]
+    }
 }
