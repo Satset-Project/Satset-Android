@@ -17,9 +17,6 @@ class ViewModelFactory(private val userPreference: UserPreference) : ViewModelPr
             modelClass.isAssignableFrom(AuthViewModel::class.java) -> {
                 AuthViewModel(userPreference) as T
             }
-            modelClass.isAssignableFrom(MainTechnicianViewModel::class.java) -> {
-                MainTechnicianViewModel(userPreference) as T
-            }
             modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
                 ProfileViewModel(userPreference) as T
             }

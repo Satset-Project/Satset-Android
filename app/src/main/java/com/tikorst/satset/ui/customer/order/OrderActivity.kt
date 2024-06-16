@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -34,14 +35,15 @@ class OrderActivity : AppCompatActivity(), AddressFragment.AddressListener,
     MediaSelectFragment.MediaListener {
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: ActivityOrderBinding
-    private lateinit var viewModel: OrderViewModel
     private var currentImageUri: Uri? = null
     private  var address: List<Address> = emptyList()
     private var addressId: String? = null
     private var serviceType: String? = null
     private var currentFragment: Int = 0
     private var orderId: String = ""
-
+    private val viewModel by viewModels<OrderViewModel> {
+        OrderViewModelFactory.getInstance(this)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup()
@@ -111,7 +113,6 @@ class OrderActivity : AppCompatActivity(), AddressFragment.AddressListener,
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this).get(OrderViewModel::class.java)
         viewModel.loading.observe(this){
             loading(it)
         }

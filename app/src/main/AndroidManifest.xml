@@ -51,7 +51,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBYCKwg9IXHYwC7dRfa5KSYL5rE1bwwH3k" />
+            android:value="" />
 
         <activity
             android:name=".ui.customer.profile.address.AddAddressActivity"

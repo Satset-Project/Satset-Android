@@ -67,7 +67,7 @@ class TechnicianRegisterActivity : AppCompatActivity() {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
-                            updateProfile(auth.currentUser, name, phone)
+                            updateProfile(auth.currentUser, name, phone.toLong())
                         } else {
                             Log.w("RegisterActivity", "createUserWithEmail:failure", task.exception)
                             Toast.makeText(baseContext, task.exception.toString(),
@@ -81,7 +81,7 @@ class TechnicianRegisterActivity : AppCompatActivity() {
     fun isValidEmail(email: CharSequence?): Boolean {
         return !email.isNullOrBlank() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
-    private fun updateProfile(user: FirebaseUser?, name: String, phone: String) {
+    private fun updateProfile(user: FirebaseUser?, name: String, phone: Long) {
         val profileUpdates = UserProfileChangeRequest.Builder()
             .setDisplayName(name)
             .build()

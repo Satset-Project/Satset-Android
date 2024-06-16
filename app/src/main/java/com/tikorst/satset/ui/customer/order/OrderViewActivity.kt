@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -28,16 +29,20 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.RoundCap
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.GeoApiContext
 import com.google.maps.PendingResult
 import com.google.maps.model.DirectionsResult
+import com.tikorst.satset.BuildConfig.MAPS_API_KEY
 import com.tikorst.satset.MainActivity
 import com.tikorst.satset.R
 import com.tikorst.satset.data.DetailAddress
 import com.tikorst.satset.data.Order
 import com.tikorst.satset.databinding.ActivityOrderViewBinding
 import com.tikorst.satset.ui.message.ChatActivity
+import com.tikorst.satset.ui.technician.MainTechnicianViewModel
+import com.tikorst.satset.ui.technician.TechnicianViewModelFactory
 import com.tikorst.satset.ui.technician.Utils
 
 class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -46,7 +51,9 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
     private var serviceType: String? = null
     private lateinit var hourglassBottom: ImageView
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
-    private lateinit var viewModel: OrderViewModel
+    private val viewModel by viewModels<OrderViewModel> {
+        OrderViewModelFactory.getInstance(this)
+    }
     private lateinit var binding: ActivityOrderViewBinding
     private lateinit var mMap: GoogleMap
     private var address: DetailAddress? = null
@@ -56,7 +63,7 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
     private var techLocation: LatLng? = null
     private val boundsBuilder = LatLngBounds.Builder()
     private val geoApiContext: GeoApiContext = GeoApiContext.Builder()
-        .apiKey("AIzaSyBYCKwg9IXHYwC7dRfa5KSYL5rE1bwwH3k")
+        .apiKey(MAPS_API_KEY)
         .build()
     private val callback = object : PendingResult.Callback<DirectionsResult> {
         override fun onResult(result: DirectionsResult?) {
@@ -70,15 +77,16 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
                             }
                         }
                     }
-                    completeRoutePoints = points
                     runOnUiThread {
                         routePolyline?.remove()
-
                         routePolyline = mMap.addPolyline(
                             PolylineOptions()
                                 .addAll(points)
                                 .color(Color.BLUE)
-                                .width(10f)
+                                .width(20f)
+                                .jointType(2)
+                                .startCap(RoundCap())
+                                .endCap(RoundCap())
                         )
                     }
                 }
@@ -166,7 +174,6 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
         animatorSet.start()
     }
     private fun viewModelSetup() {
-        viewModel = ViewModelProvider(this).get(OrderViewModel::class.java)
         viewModel.order.observe(this){
             if(it == null){
                 return@observe
@@ -193,9 +200,12 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         viewModel.orderListener(order_id!!)
         viewModel.address.observe(this){
-            if(address == null && techLocation != null){
-                Utils.fetchDirections(geoApiContext,  techLocation!!,LatLng(it.latitude!!, it.longitude!!), callback)
-                boundsBuilder.include(LatLng(it.latitude, it.longitude))
+
+            address = it
+            if(routePolyline == null && techLocation != null){
+                viewModel.fetchDirections( techLocation!!, LatLng(address?.latitude!!, address?.longitude!!), callback)
+                viewModel.fetchDirections( techLocation!!, LatLng(address?.latitude!!, address?.longitude!!), callback)
+                boundsBuilder.include(LatLng(address?.latitude!!, address?.longitude!!))
                 boundsBuilder.include(techLocation!!)
                 val bounds: LatLngBounds = boundsBuilder.build()
                 mMap.animateCamera(
@@ -207,7 +217,7 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
                     )
                 )
             }
-            address = it
+
             mMap.addMarker(
                 MarkerOptions()
                     .position(LatLng(it.latitude!!, it.longitude!!))
@@ -249,10 +259,26 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
             }else{
                 this.techLocation = techLocation
                 updateLocationOnMap(techLocation)
+                address?.let { LatLng(it.latitude!!, it.longitude!!) }?.let {
+                    viewModel.fetchDirections( techLocation, it, callback)
+                    boundsBuilder.include(LatLng(address?.latitude!!, address?.longitude!!))
+                    boundsBuilder.include(techLocation)
+                    val bounds: LatLngBounds = boundsBuilder.build()
+                    mMap.animateCamera(
+                        CameraUpdateFactory.newLatLngBounds(
+                            bounds,
+                            resources.displayMetrics.widthPixels,
+                            resources.displayMetrics.heightPixels,
+                            200
+                        )
+                    )
+                }
+
+
                 if(routePolyline != null){
                     updateRoutePolyline(techLocation)
                     if( Utils.calculateDistance(techLocation,routePolyline?.points!![0] ) > 100){
-                        Utils.fetchDirections(geoApiContext, techLocation, LatLng(address?.latitude!!, address?.longitude!!), callback)
+                        viewModel.fetchDirections( techLocation, LatLng(address?.latitude!!, address?.longitude!!), callback)
                     }
                 }
             }
@@ -282,14 +308,23 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
     private fun updateRoutePolyline(driverLocation: LatLng) {
-        completeRoutePoints = routePolyline?.points!!
-        val points = completeRoutePoints.take(10)
-        for (point in points) {
-            if (Utils.driverHasPassed(driverLocation, point)) {
-                completeRoutePoints.remove(point)
-            }
+//        routePolyline?.let { polyline ->
+//            val completeRoutePoints = polyline.points.toMutableList()
+//            val pointsToCheck = completeRoutePoints.take(15)
+//            val pointsToRemove = mutableListOf<LatLng>()
+//            for (point in pointsToCheck) {
+//                if (Utils.driverHasPassed(driverLocation, point)) {
+//                    pointsToRemove.add(point)
+//                }
+//            }
+//            completeRoutePoints.removeAll(pointsToRemove)
+//            polyline.points = completeRoutePoints
+//        }
+        runOnUiThread{
+            val remainingRoute = Utils.getRemainingRoute(driverLocation,routePolyline?.points!!)
+            routePolyline?.remove()
+            routePolyline = mMap.addPolyline(remainingRoute)
         }
-        routePolyline?.points = completeRoutePoints
 
     }
 }

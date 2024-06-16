@@ -4,8 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
@@ -17,18 +15,13 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.location.LocationCallback
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.LocationRequest
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -39,8 +32,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -48,28 +39,19 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.RoundCap
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.maps.DirectionsApi
-import com.google.maps.DirectionsApiRequest
-import com.google.maps.GeoApiContext
 import com.google.maps.PendingResult
 import com.google.maps.model.DirectionsResult
-import com.google.maps.model.TravelMode
-import com.tikorst.satset.AuthViewModel
 import com.tikorst.satset.LoginActivity
 import com.tikorst.satset.R
-import com.tikorst.satset.ViewModelFactory
-import com.tikorst.satset.data.Address
-import com.tikorst.satset.data.DetailAddress
 import com.tikorst.satset.data.OrderID
 import com.tikorst.satset.data.ServicesData
 import com.tikorst.satset.databinding.ActivityMainTechnicianBinding
-import com.tikorst.satset.databinding.ActivityOrderViewBinding
-import com.tikorst.satset.ui.customer.profile.address.AddAddressActivity
 import com.tikorst.satset.ui.message.ChatActivity
 
 class MainTechnicianActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -79,6 +61,7 @@ class MainTechnicianActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private var userMarker: Marker? = null
     private var routePolyline: Polyline? = null
+    private var routePolylineDriven: Polyline? = null
     private var completeRoutePoints = mutableListOf<LatLng>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
@@ -88,12 +71,10 @@ class MainTechnicianActivity : AppCompatActivity(), OnMapReadyCallback {
     private val boundsBuilder = LatLngBounds.Builder()
     private val updateInterval: Long = 5000
     val points = mutableListOf<LatLng>()
+    private var lastUpdateLocation: LatLng? = null
     private val viewModel by viewModels<MainTechnicianViewModel> {
-        ViewModelFactory.getInstance(this)
+        TechnicianViewModelFactory.getInstance(this)
     }
-    private val geoApiContext = GeoApiContext.Builder()
-        .apiKey("AIzaSyBYCKwg9IXHYwC7dRfa5KSYL5rE1bwwH3k")
-        .build()
     val callback = object : PendingResult.Callback<DirectionsResult> {
         override fun onResult(result: DirectionsResult?) {
             result?.routes?.let { routes ->
@@ -112,7 +93,12 @@ class MainTechnicianActivity : AppCompatActivity(), OnMapReadyCallback {
                             PolylineOptions()
                                 .addAll(points)
                                 .color(Color.BLUE)
-                                .width(10f)
+                                .width(20f)
+                                .jointType(2)
+                                .startCap(RoundCap())
+                                .endCap(RoundCap())
+
+
                         )
                     }
                 }
@@ -249,18 +235,18 @@ class MainTechnicianActivity : AppCompatActivity(), OnMapReadyCallback {
             binding.address.text = formattedAddress
             Log.d("destination", "destination is called")
             if(destination == null && userLatLng != null){
-                Utils.fetchDirections(geoApiContext, userLatLng!!, LatLng(it.latitude!!, it.longitude!!), callback)
-//                boundsBuilder.include(LatLng(it.latitude, it.longitude))
-//                boundsBuilder.include(userLatLng!!)
-//                val bounds: LatLngBounds = boundsBuilder.build()
-//                mMap.animateCamera(
-//                    CameraUpdateFactory.newLatLngBounds(
-//                        bounds,
-//                        resources.displayMetrics.widthPixels,
-//                        resources.displayMetrics.heightPixels,
-//                        300
-//                    )
-//                )
+                viewModel.fetchDirections(userLatLng!!, LatLng(it.latitude!!, it.longitude!!), callback)
+                boundsBuilder.include(LatLng(it.latitude, it.longitude))
+                boundsBuilder.include(userLatLng!!)
+                val bounds: LatLngBounds = boundsBuilder.build()
+                mMap.animateCamera(
+                    CameraUpdateFactory.newLatLngBounds(
+                        bounds,
+                        resources.displayMetrics.widthPixels,
+                        resources.displayMetrics.heightPixels,
+                        150
+                    )
+                )
             }
             destination = LatLng(it?.latitude!!, it.longitude!!)
             mMap.addMarker(
@@ -309,7 +295,7 @@ class MainTechnicianActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
     private fun startLocationUpdates() {
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
             .build()
         val locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
@@ -318,11 +304,21 @@ class MainTechnicianActivity : AppCompatActivity(), OnMapReadyCallback {
                 if(destination == null && order != null){
                     viewModel.getAddress(order?.order?.addressId!!, order?.order?.userId!!)
                 }
+                if(routePolylineDriven == null){
+                    routePolylineDriven = mMap.addPolyline(
+                        PolylineOptions()
+                            .addAll(points)
+                            .color(Color.DKGRAY)
+                            .width(20f)
+                    )
+                }else{
+                    routePolylineDriven?.points?.add(userLatLng!!)
+                }
                 updateLocationOnMap(userLatLng!!)
                 if(routePolyline != null){
                     updateRoutePolyline(userLatLng!!)
                     if( Utils.calculateDistance(userLatLng!!,routePolyline?.points!![0] ) > 100){
-                        Utils.fetchDirections(geoApiContext, userLatLng!!, destination!!, callback)
+                        viewModel.fetchDirections(userLatLng!!, destination!!, callback)
                     }
                 }
 
@@ -354,15 +350,30 @@ class MainTechnicianActivity : AppCompatActivity(), OnMapReadyCallback {
                 Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
     private fun updateRoutePolyline(driverLocation: LatLng) {
-        Log.d("updateRoutePolyline called", driverLocation.toString())
-        completeRoutePoints = routePolyline?.points!!
-        val points = completeRoutePoints.take(10)
-        for (point in points) {
-            if (Utils.driverHasPassed(driverLocation, point)) {
-                completeRoutePoints.remove(point)
-            }
+
+//        routePolyline?.let { polyline ->
+//            val completeRoutePoints = polyline.points.toMutableList()
+//            val pointsToRemove = mutableListOf<LatLng>()
+//
+//            for (point in completeRoutePoints) {
+//                if (Utils.calculateDistance(driverLocation, point) <= 10) {
+//                    pointsToRemove.add(point)
+//                } else {
+//                    break
+//                }
+//            }
+//
+//            completeRoutePoints.removeAll(pointsToRemove)
+//
+//            runOnUiThread {
+//                polyline.points = completeRoutePoints
+//            }
+//        }
+        runOnUiThread{
+            val remainingRoute = Utils.getRemainingRoute(driverLocation,routePolyline?.points!!)
+            routePolyline?.remove()
+            routePolyline = mMap.addPolyline(remainingRoute)
         }
-        routePolyline?.points = completeRoutePoints
 
     }
     override fun onPause() {

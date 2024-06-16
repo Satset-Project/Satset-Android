@@ -14,6 +14,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.getField
 import com.google.firebase.storage.FirebaseStorage
+import com.google.maps.DirectionsApiRequest
+import com.google.maps.GeoApiContext
+import com.google.maps.PendingResult
+import com.google.maps.model.DirectionsResult
+import com.google.maps.model.TravelMode
 import com.tikorst.satset.data.Address
 import com.tikorst.satset.data.DetailAddress
 import com.tikorst.satset.data.Order
@@ -21,7 +26,7 @@ import com.tikorst.satset.data.Technician
 import kotlinx.coroutines.launch
 import java.io.File
 
-class OrderViewModel : ViewModel() {
+class OrderViewModel(private val geoApiContext: GeoApiContext) : ViewModel() {
     val db = FirebaseFirestore.getInstance()
     private val _addressList = MutableLiveData<List<Address>>()
     val addressList: LiveData<List<Address>>
@@ -166,7 +171,24 @@ class OrderViewModel : ViewModel() {
                 }
         }
     }
+    fun fetchDirections( origin: LatLng, destination: LatLng, callback: PendingResult.Callback<DirectionsResult>) {
+        viewModelScope.launch {
+            val request = DirectionsApiRequest(geoApiContext)
+            request.origin(com.google.maps.model.LatLng(origin.latitude, origin.longitude))
+            request.destination(com.google.maps.model.LatLng(destination.latitude, destination.longitude))
+            request.mode(TravelMode.DRIVING)
 
+            request.setCallback(object : com.google.maps.PendingResult.Callback<DirectionsResult> {
+                override fun onResult(result: DirectionsResult?) {
+                    callback.onResult(result)
+                }
+
+                override fun onFailure(e: Throwable?) {
+                    callback.onFailure(e)
+                }
+            })
+        }
+    }
     override fun onCleared() {
         super.onCleared()
         listener?.remove()

@@ -30,6 +30,7 @@ android {
         }
         debug{
             android.buildFeatures.buildConfig = true
+            buildConfigField("String", "MAPS_API_KEY", "\"\"")
         }
     }
     compileOptions {

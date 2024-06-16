@@ -8,7 +8,7 @@ data class Technician (
     @get:PropertyName("name")
     var name: String = "",
     @get:PropertyName("phone")
-    var phone: String = "",
+    var phone: Long = 0,
     @get:PropertyName("rating")
     var rating: Double = 0.0,
     @get:PropertyName("status")

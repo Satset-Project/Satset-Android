@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.location.Location
 import android.util.Log
 import androidx.annotation.ColorInt
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.RoundCap
 import com.google.maps.DirectionsApiRequest
 import com.google.maps.GeoApiContext
 import com.google.maps.PendingResult
@@ -50,61 +52,49 @@ object Utils {
         vectorDrawable.draw(canvas)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
-     fun fetchDirections(geoApiContext: GeoApiContext, origin: LatLng, destination: LatLng, callback: PendingResult.Callback<DirectionsResult>) {
-        Log.d("Directions", "Fetching directions")
-        val request = DirectionsApiRequest(geoApiContext)
-        request.origin(com.google.maps.model.LatLng(origin.latitude, origin.longitude))
-        request.destination(com.google.maps.model.LatLng(destination.latitude, destination.longitude))
-        request.mode(TravelMode.DRIVING) // You can specify other travel modes here
-
-        // Execute the request asynchronously
-        request.setCallback(object : com.google.maps.PendingResult.Callback<DirectionsResult> {
-            override fun onResult(result: DirectionsResult?) {
-                callback.onResult(result)
-            }
-
-            override fun onFailure(e: Throwable?) {
-                callback.onFailure(e)
-            }
-        })
-    }
-    fun showRouteToDestination(
-        fusedLocationClient: FusedLocationProviderClient,
-        destination: LatLng,
-        context: Context,
-        requestCode: Int,
-        geoApiContext: GeoApiContext,
-        callback: PendingResult.Callback<DirectionsResult>
-    ) {
-        // Check for location permission and fetch user's current location
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                location?.let {
-                    val origin = LatLng(location.latitude, location.longitude)
-                    fetchDirections(geoApiContext, origin, destination, callback)
-
-                }
-            }
-        } else {
-            // Request location permission
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-               requestCode
-            )
-        }
-    }
 
     fun driverHasPassed(driverLocation: LatLng, point: LatLng): Boolean {
         val distance = calculateDistance(driverLocation, point)
         Log.d("distance", distance.toString())
 
-        return distance <= 7
+        return distance <= 15
     }
     fun calculateDistance(point1: LatLng, point2: LatLng): Float {
         val results = FloatArray(1)
         Location.distanceBetween(point1.latitude, point1.longitude, point2.latitude, point2.longitude, results)
         return results[0]
     }
+    fun getRemainingRoute(userLocation: LatLng, routePoints: List<LatLng>): PolylineOptions {
+
+        val nearestPointIndex = findNearestPointIndex(userLocation, routePoints)
+
+        val remainingRoutePoints = routePoints.subList(nearestPointIndex, routePoints.size)
+
+        return PolylineOptions()
+            .addAll(remainingRoutePoints)
+            .color(Color.BLUE)
+            .width(20f)
+            .jointType(2)
+            .startCap(RoundCap())
+            .endCap(RoundCap())
+
+    }
+    private fun findNearestPointIndex(userLocation: LatLng, routePoints: List<LatLng>): Int {
+        var nearestDistance = Float.MAX_VALUE
+        var nearestIndex = -1
+
+        for ((index, point) in routePoints.withIndex()) {
+            val results = FloatArray(1)
+            Location.distanceBetween(userLocation.latitude, userLocation.longitude, point.latitude, point.longitude, results)
+            val distance = results[0]
+            if (distance < nearestDistance) {
+                nearestDistance = distance
+                nearestIndex = index
+            }
+        }
+
+        return nearestIndex
+    }
 }
+
+
