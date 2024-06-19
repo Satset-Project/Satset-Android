@@ -302,6 +302,7 @@ class OrderViewActivity : AppCompatActivity(), OnMapReadyCallback {
                 MarkerOptions()
                     .position(userLatLng)
                     .title("User Marker")
+                    .anchor(0.5f, 0.5f)
                     .icon(Utils.vectorToBitmap(R.drawable.baseline_directions_car_24, getColor(R.color.md_theme_primary), resources)))
         } else {
             userMarker?.position = userLatLng

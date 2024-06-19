@@ -59,7 +59,7 @@ class DetailCategory : Fragment() {
         navView.visibility = View.GONE
         servicesGridView = binding.servicesGridView
         categories = param1!!.services
-
+        binding.photo.setImageResource(param1!!.background)
         categoryAdapter = ServicesAdapter(requireContext(), categories as ArrayList<Service>)
         servicesGridView!!.setAdapter(categoryAdapter)
 
