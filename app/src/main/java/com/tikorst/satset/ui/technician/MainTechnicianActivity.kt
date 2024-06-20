@@ -47,6 +47,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.maps.PendingResult
 import com.google.maps.model.DirectionsResult
+import com.tikorst.satset.BuildConfig
 import com.tikorst.satset.LoginActivity
 import com.tikorst.satset.R
 import com.tikorst.satset.data.OrderID

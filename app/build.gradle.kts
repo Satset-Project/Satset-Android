@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+val key: String = gradleLocalProperties(rootDir,providers).getProperty("MAPS_API_KEY")
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -30,7 +32,7 @@ android {
         }
         debug{
             android.buildFeatures.buildConfig = true
-            buildConfigField("String", "MAPS_API_KEY", "\"\"")
+            buildConfigField("String", "MAPS_API_KEY", key)
         }
     }
     compileOptions {
