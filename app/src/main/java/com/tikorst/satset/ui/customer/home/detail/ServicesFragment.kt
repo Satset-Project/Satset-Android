@@ -55,7 +55,7 @@ class ServicesFragment : BottomSheetDialogFragment() {
 
         binding.orderButton.setOnClickListener {
             val intent = Intent(requireContext(), OrderActivity::class.java)
-            intent.putExtra("service", service!!.name)
+            intent.putExtra("service", service!!.type + " " + service!!.name)
             startActivity(intent)
         }
 //        dialog?.setOnShowListener{
