@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(this, MainTechnicianActivity::class.java))
                     finish()
                 }else{
-                    startActivity(Intent(this, com.tikorst.satset.ui.customer.MainCustomerActivity::class.java))
+                    startActivity(Intent(this, MainCustomerActivity::class.java))
                     finish()
                 }
             }

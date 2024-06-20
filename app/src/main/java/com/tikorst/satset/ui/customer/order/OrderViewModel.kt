@@ -178,7 +178,7 @@ class OrderViewModel(private val geoApiContext: GeoApiContext) : ViewModel() {
             request.destination(com.google.maps.model.LatLng(destination.latitude, destination.longitude))
             request.mode(TravelMode.DRIVING)
 
-            request.setCallback(object : com.google.maps.PendingResult.Callback<DirectionsResult> {
+            request.setCallback(object : PendingResult.Callback<DirectionsResult> {
                 override fun onResult(result: DirectionsResult?) {
                     callback.onResult(result)
                 }

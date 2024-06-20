@@ -52,7 +52,7 @@ class DetailCategory : Fragment() {
         _binding = FragmentDetailCategoryBinding.inflate(inflater, container, false)
         val root: View = binding.root
 //        binding.photo.setImageResource(param1!!.logoResId)
-        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false);
+        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
         binding.title.text = param1!!.name
         binding.description.text = param1!!.description
         navView = requireActivity().findViewById(R.id.nav_view)

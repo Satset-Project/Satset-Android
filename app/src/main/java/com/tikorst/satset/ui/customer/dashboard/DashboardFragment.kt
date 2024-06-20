@@ -32,17 +32,17 @@ class DashboardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val dashboardViewModel =
-            ViewModelProvider(this).get(com.tikorst.satset.ui.customer.dashboard.DashboardViewModel::class.java)
+            ViewModelProvider(this).get(DashboardViewModel::class.java)
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
         val sectionsPagerAdapter =
-            com.tikorst.satset.ui.customer.dashboard.SectionsPagerAdapter(requireActivity())
+            SectionsPagerAdapter(requireActivity())
         val viewPager: ViewPager2 = binding.viewPager
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = binding.tabs
         TabLayoutMediator(tabs, viewPager) { tab, position ->
-            tab.text = com.tikorst.satset.ui.customer.dashboard.DashboardFragment.Companion.TAB_TITLES[position]
+            tab.text = TAB_TITLES[position]
         }.attach()
 
         return root

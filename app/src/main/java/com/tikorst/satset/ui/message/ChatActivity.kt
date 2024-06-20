@@ -30,7 +30,7 @@ class ChatActivity : AppCompatActivity() {
         setupRecyclerView()
         binding.sendButton.setOnClickListener{
             val messageText = binding.messageEditText.text.toString()
-            viewModel.sendMessage(orderId!!, messageText, firebaseUser!!.uid)
+            viewModel.sendMessage(orderId!!, messageText, firebaseUser.uid)
             binding.messageEditText.setText("")
         }
     }

@@ -109,28 +109,6 @@ class ServicesFragment : BottomSheetDialogFragment() {
                 }
             }
     }
-    override fun onStart() {
-        super.onStart()
-
-//        dialog?.let { dialog ->
-//            val bottomSheet = dialog.findViewById<View>(R.id.serviceBottomSheet)
-//            bottomSheet?.let {
-//                val behavior = BottomSheetBehavior.from(it)
-//                behavior.state = BottomSheetBehavior.STATE_EXPANDED
-//
-//                it.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-//                    override fun onGlobalLayout() {
-//                        it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                        val screenHeight = requireActivity().window.decorView.height
-//                        val targetHeight = (screenHeight * 0.45).toInt()
-//                        it.layoutParams.height = targetHeight
-//                        it.layoutParams = it.layoutParams
-//                        behavior.peekHeight = targetHeight
-//                    }
-//                })
-//            }
-//        }
-    }
 
     override fun onDestroyView() {
         dialogView?.viewTreeObserver?.addOnGlobalLayoutListener(null)

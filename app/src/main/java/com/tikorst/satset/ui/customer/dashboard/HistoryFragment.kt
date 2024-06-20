@@ -22,14 +22,11 @@ class HistoryFragment : Fragment() {
     private lateinit var _binding: FragmentHistoryBinding
     private lateinit var auth: FirebaseAuth
     private val binding get() = _binding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentHistoryBinding.inflate(inflater, container, false)
 
